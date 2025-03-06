@@ -49,6 +49,7 @@ class HomeCubit extends Cubit<HomeStates> {
         isRecording = false;
         emit(RecordingState(isRecording));
         emit(FilePickedState(path));
+        showResultWidget();
       }
     } else {
       if (await audioRecorder.hasPermission()) {
@@ -85,6 +86,22 @@ class HomeCubit extends Cubit<HomeStates> {
     if (result != null && result.files.single.path != null) {
       path = result.files.single.path!;
       emit(FilePickedState(path));
+      showResultWidget();
     }
+  }
+  void showResultWidget() {
+    showResult = !showResult;
+    emit(ShowResultState(showResult));
+  }
+  Future<void> reset() async {
+    isRecording = false;
+    isPlaying = false;
+    showResult = false;
+    path = "";
+    audioPlayer.stop();
+    emit(RecordingState(isRecording));
+    emit(PlayingState(isPlaying));
+    emit(FilePickedState(path));
+    emit(ShowResultState(showResult));
   }
 }

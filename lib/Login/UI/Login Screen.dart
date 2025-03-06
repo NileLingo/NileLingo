@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Text("EGY",style: GoogleFonts.montserrat(
             color: primaryTextColor,
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w700,
           ),),
         ),
@@ -34,14 +34,14 @@ class LoginScreen extends StatelessWidget {
             children: [
               Text("Hey There",style: GoogleFonts.montserrat(
                 color: primaryTextColor,
-                fontSize: 35,
+                fontSize: 26.sp,
                 fontWeight: FontWeight.bold,
               ),),
               SizedBox(
                 height: 2.h,
               ),
               Text("Welcome to NileLingu le’s translate easly from EGY to ENG and vice versa.",style: GoogleFonts.montserrat(
-                fontSize: 13,
+                fontSize: 15.sp,
                 color: secondaryTextColor,
                 fontWeight: FontWeight.w600,
               ),),
@@ -51,14 +51,14 @@ class LoginScreen extends StatelessWidget {
               TextFormField(
                 style: GoogleFonts.montserrat(
                   color: primaryTextColor,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
                 decoration: InputDecoration(
                   hintText: "Email",
                   hintStyle: GoogleFonts.montserrat(
                     color: secondaryTextColor,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                   fillColor: const Color(0xff1E1E1E),
@@ -76,14 +76,14 @@ class LoginScreen extends StatelessWidget {
               TextFormField(
                 style: GoogleFonts.montserrat(
                   color: primaryTextColor,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),
                 decoration: InputDecoration(
                   hintText: "Password",
                   hintStyle: GoogleFonts.montserrat(
                     color: secondaryTextColor,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                   fillColor: const Color(0xff1E1E1E),
@@ -100,7 +100,7 @@ class LoginScreen extends StatelessWidget {
               ),
               Text("Forget Password?",style: GoogleFonts.montserrat(
                 color: primaryTextColor,
-                fontSize: 16,
+                fontSize: 17.sp,
                 fontWeight: FontWeight.w600,
               ),),
               SizedBox(
@@ -115,14 +115,14 @@ class LoginScreen extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.center,
                   width: double.infinity,
-                  height: 65,
+                  height: 8.h,
                   decoration: BoxDecoration(
                     color: primaryColor,
                     borderRadius: BorderRadius.circular(25),
                   ),
                   child: Text("Login",style: GoogleFonts.montserrat(
                     color: backgroundColor,
-                    fontSize: 20,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                   ),),
                 ),
@@ -133,7 +133,7 @@ class LoginScreen extends StatelessWidget {
               Center(
                 child: Text("OR",style: GoogleFonts.montserrat(
                   color: secondaryTextColor,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                 ),),
               ),
@@ -145,7 +145,7 @@ class LoginScreen extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.center,
                   width: double.infinity,
-                  height: 65,
+                  height: 8.h,
                   decoration: BoxDecoration(
                     color: fillColor,
                     borderRadius: BorderRadius.circular(25),
@@ -159,7 +159,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       Text("Continue With Google",style: GoogleFonts.montserrat(
                         color: primaryTextColor,
-                        fontSize: 18,
+                        fontSize: 17.sp,
                         fontWeight: FontWeight.w600,
                       ),),
                     ],
@@ -174,11 +174,11 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   Text("Don't have an account?",style: GoogleFonts.montserrat(
                     color: secondaryTextColor,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),),
-                  const SizedBox(
-                    width: 5,
+                   SizedBox(
+                    width: 1.w,
                   ),
                   GestureDetector(
                     onTap: (){
@@ -188,7 +188,7 @@ class LoginScreen extends StatelessWidget {
                     },
                     child: Text("Sign Up",style: GoogleFonts.montserrat(
                       color: primaryColor,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                     ),),
                   ),

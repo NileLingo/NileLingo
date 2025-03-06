@@ -32,3 +32,7 @@ class ErrorState extends HomeStates {
   final String errorMessage;
   ErrorState(this.errorMessage);
 }
+class ShowResultState extends HomeStates {
+  final bool showResult;
+  ShowResultState(this.showResult);
+}
