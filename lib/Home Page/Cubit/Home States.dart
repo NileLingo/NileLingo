@@ -9,7 +9,8 @@ class RecordingState extends HomeStates {
 
 class PlayingState extends HomeStates {
   final bool isPlaying;
-  PlayingState(this.isPlaying);
+  final bool isResultPlaying;
+  PlayingState(this.isPlaying,this.isResultPlaying);
 }
 
 class FilePickedState extends HomeStates {
@@ -35,4 +36,23 @@ class ErrorState extends HomeStates {
 class ShowResultState extends HomeStates {
   final bool showResult;
   ShowResultState(this.showResult);
+}
+class TranslationSuccessState extends HomeStates {
+  final String translation;
+  TranslationSuccessState(this.translation);
+}
+class TranslationFailedState extends HomeStates {
+  final String errorMessage;
+  TranslationFailedState(this.errorMessage);
+}
+class TranslationLoadingState extends HomeStates {}
+class SourceTextChangedState extends HomeStates {
+  final String sourceText;
+  SourceTextChangedState(this.sourceText);
+}
+class TranslationSuccessWithAudioState extends HomeStates {
+  final String translation;
+  final String audioFilePath;
+
+  TranslationSuccessWithAudioState(this.translation, this.audioFilePath);
 }

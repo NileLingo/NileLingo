@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,26 +7,26 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nile_lingo/Home%20Page/Cubit/Home%20Cubit.dart';
 import 'package:nile_lingo/Home%20Page/Cubit/Home%20States.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:nile_lingo/Result%20Page/Result%20Page.dart';
 import 'package:record/record.dart';
 import 'package:sizer/sizer.dart';
 import '../../Constants/Constant.dart';
 import '../../History/UI/History Screen.dart';
 
 class HomeScreen extends StatelessWidget {
-   HomeScreen({super.key});
-
-
-
-  //Recording
-  final AudioRecorder audioRecorder = AudioRecorder();
-
-  final AudioPlayer audioPlayer = AudioPlayer();
-
+  HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if(state is TranslationSuccessWithAudioState){
+           Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ResultPage()),
+            );
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             backgroundColor: backgroundColor,
@@ -47,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                       HomeCubit.get(context).isFavourite
                           ? FontAwesomeIcons.solidStar
                           : FontAwesomeIcons.star,
-                      color:  HomeCubit.get(context).isFavourite ? primaryColor : secondaryTextColor,
+                      color:  secondaryTextColor,
                       size: 25,
                     )),
               ),
@@ -83,9 +80,15 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            body:  HomeCubit.get(context).showResult
-                ? ResultSection(context)
-                : RecordSection(context),
+            body: state is TranslationLoadingState
+                ? SizedBox.expand(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: primaryColor,
+                      ),
+                    ),
+                  )
+                :  RecordSection(context),
             bottomNavigationBar: SizedBox(
               height: 23.h,
               child: Stack(
@@ -105,24 +108,24 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    width: 80,
-                    height: 80,
+                    width: 75,
+                    height: 75,
                     left: 7.w,
                     bottom: 4.h,
                     child: GestureDetector(
-                      onTap:  HomeCubit.get(context).pickAudioFile,
+                      onTap: HomeCubit.get(context).pickAudioFile,
                       child: Container(
                         decoration: const BoxDecoration(
                           color: Color(0xff433061),
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                         ),
-                        child: Image.asset("assets/Group 3.png", scale: 0.85),
+                        child: Image.asset("assets/Group 3.png", scale: 0.99),
                       ),
                     ),
                   ),
                   Positioned(
-                    width: 130,
-                    height: 130,
+                    width: 120,
+                    height: 120,
                     left: 34.w,
                     bottom: 7.h,
                     child: GestureDetector(
@@ -139,18 +142,21 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    width: 80,
-                    height: 80,
+                    width: 75,
+                    height: 75,
                     right: 7.w,
                     bottom: 4.h,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color(0xff433061),
-                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                      ),
-                      child: Image.asset(
-                        "assets/refresh.png",
-                        scale: 0.85,
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Color(0xff433061),
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                        ),
+                        child: Image.asset(
+                          "assets/refresh.png",
+                          scale: 0.99,
+                        ),
                       ),
                     ),
                   ),
@@ -173,11 +179,11 @@ String truncateFileName(String fileName, int maxLength) {
   }
   return '${fileName.substring(0, maxLength)}...';
 }
-Widget ResultSection(context){
+
+Widget ResultSection(context) {
   return SafeArea(
     child: Padding(
-      padding: const EdgeInsets.symmetric(
-          vertical: 20.0, horizontal: 22),
+      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 22),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,34 +209,39 @@ Widget ResultSection(context){
                   ),
                   SizedBox(height: 2.h),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start, // Aligns items at the top
                     children: [
                       Expanded(
-                        child: Text(
-                          truncateFileName(
-                              getFileName(HomeCubit.get(context).path), 20),
-                          style: GoogleFonts.montserrat(
-                            color: secondaryTextColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start, // Aligns text to the left
+                          children: [
+                            Text(
+                              truncateFileName(HomeCubit.get(context).sourceText, 1000), // Ensures full text display
+                              style: GoogleFonts.montserrat(
+                                color: secondaryTextColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              softWrap: true,
+                            ),
+                          ],
                         ),
                       ),
+                      const SizedBox(width: 10), // Adds spacing between text and icon
                       IconButton(
                         onPressed: () {
                           HomeCubit.get(context).togglePlaying();
                         },
                         icon: Icon(
-                          HomeCubit.get(context).isPlaying
-                              ? Icons.pause
-                              : Icons.volume_up,
+                          HomeCubit.get(context).isPlaying ? Icons.pause : Icons.volume_up,
                           color: primaryColor,
                           size: 35,
                         ),
                       ),
                     ],
                   )
+
+
                 ],
               ),
             ),
@@ -257,29 +268,48 @@ Widget ResultSection(context){
                     ),
                     SizedBox(height: 2.h),
                     Padding(
-                      padding:
-                      const EdgeInsets.only(right: 15.0),
+                      padding: const EdgeInsets.only(right: 15.0),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start, // Aligns items to the top
                         children: [
-                          IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.volume_up,
-                                color: primaryColor,
-                                size: 35,
-                              )),
-                          const Spacer(),
-                          Text(
-                            "ازيك",
-                            style: GoogleFonts.montserrat(
-                              color: secondaryTextColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                          Column(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  HomeCubit.get(context).togglePlaying(isSource: false);
+                                },
+                                icon: Icon(
+                                  HomeCubit.get(context).isResultPlaying
+                                      ? Icons.pause
+                                      : Icons.volume_up,
+                                  color: primaryColor,
+                                  size: 35,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 10), // Adds spacing between icon and text
+                          Expanded( // Ensures text wraps properly
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  HomeCubit.get(context).translation,
+                                  style: GoogleFonts.montserrat(
+                                    color: secondaryTextColor,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  softWrap: true, // Allows text to wrap
+                                  overflow: TextOverflow.visible, // Ensures text doesn't get clipped
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ),
+                    )
+
                   ],
                 ),
               ),
@@ -321,9 +351,13 @@ Widget ResultSection(context){
                     Row(
                       children: [
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              HomeCubit.get(context).togglePlaying(isSource: false);
+                            },
                             icon: Icon(
-                              Icons.volume_up,
+                              HomeCubit.get(context).isResultPlaying
+                                  ? Icons.pause
+                                  : Icons.volume_up,
                               color: primaryColor,
                               size: 30,
                             )),
@@ -378,8 +412,7 @@ Widget ResultSection(context){
                             ),
                           ),
                           TextSpan(
-                            text:
-                            "this phrase can’t be translated literally",
+                            text: "this phrase can’t be translated literally",
                             style: GoogleFonts.montserrat(
                               color: secondaryTextColor,
                               fontSize: 15,
@@ -413,11 +446,11 @@ Widget ResultSection(context){
     ),
   );
 }
-Widget RecordSection(context){
+
+Widget RecordSection(context) {
   return SafeArea(
     child: Padding(
-      padding: const EdgeInsets.symmetric(
-          vertical: 20.0, horizontal: 22),
+      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 22),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -445,13 +478,18 @@ Widget RecordSection(context){
                     ),
                     SizedBox(height: 0.5.h),
                     TextFormField(
+                      controller: HomeCubit.get(context).textController,
                       style: GoogleFonts.montserrat(
                         color: primaryTextColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                       onFieldSubmitted: (value) {
-                        HomeCubit.get(context).showResultWidget();
+                        HomeCubit.get(context).translateAndSpeak(
+                            HomeCubit.get(context)
+                                .textController
+                                .text
+                                .toString());
                       },
                       decoration: InputDecoration(
                         hintText: "Type Here ..",
@@ -462,11 +500,9 @@ Widget RecordSection(context){
                         ),
                         fillColor: fillColor,
                         filled: true,
-                        contentPadding:
-                        const EdgeInsets.all(20),
+                        contentPadding: const EdgeInsets.all(20),
                         border: OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide.none,
                         ),
                       ),
@@ -479,17 +515,17 @@ Widget RecordSection(context){
                           onPressed: () {
                             HomeCubit.get(context).toggleRecording();
                           },
-                          icon:  HomeCubit.get(context).isRecording
+                          icon: HomeCubit.get(context).isRecording
                               ? Icon(
-                            Icons.stop_circle_outlined,
-                            color: primaryColor,
-                            size: 50,
-                          )
+                                  Icons.stop_circle_outlined,
+                                  color: primaryColor,
+                                  size: 50,
+                                )
                               : Icon(
-                            Icons.mic,
-                            color: primaryColor,
-                            size: 50,
-                          ),
+                                  Icons.mic,
+                                  color: primaryColor,
+                                  size: 50,
+                                ),
                         ),
                       ],
                     ),
@@ -530,8 +566,7 @@ Widget RecordSection(context){
                     ),
                     SizedBox(height: 2.h),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: Text(
                         "Translation",
                         style: GoogleFonts.montserrat(
