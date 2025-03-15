@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AudioApi {
-  static String baseUrl = "https://e5e0-34-83-89-239.ngrok-free.app/";
+  static String baseUrl = "https://173d-34-16-210-105.ngrok-free.app/";
   static String translateSpeechEndpoint = "translate-text";
   static String translateAndSpeakEndpoint = "translate-and-speak";
   static String speechToSpeechEndpoint = "speech-to-speech";

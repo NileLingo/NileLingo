@@ -85,9 +85,8 @@ class ResultPage extends StatelessWidget {
                   children: [
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.only(left: 25, top: 25, right: 25, bottom: 45),
+                      padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                        color: fillColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
@@ -97,7 +96,7 @@ class ResultPage extends StatelessWidget {
                             HomeCubit.get(context).language1,
                             style: GoogleFonts.montserrat(
                               color: primaryTextColor,
-                              fontSize: 24,
+                              fontSize: 18,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -111,11 +110,11 @@ class ResultPage extends StatelessWidget {
                                   children: [
                                     Text(
                                       HomeCubit.get(context).isAudioInput
-                                          ? HomeCubit.get(context).audioFilePath // Show file path if audio input
-                                          : truncateFileName(HomeCubit.get(context).sourceText, 1000),
+                                          ? getFileName(HomeCubit.get(context).path)
+                                          : HomeCubit.get(context).sourceText,
                                       style: GoogleFonts.montserrat(
                                         color: secondaryTextColor,
-                                        fontSize: 18,
+                                        fontSize: 28,
                                         fontWeight: FontWeight.w600,
                                       ),
                                       softWrap: true,
@@ -140,14 +139,21 @@ class ResultPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 2.5.h),
+                    SizedBox(height: 8.h),
+                    Padding(
+                      padding:  EdgeInsets.symmetric(horizontal: 17.w),
+                      child: Divider(
+                        color: primaryColor,
+                        thickness: 1,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
                     FadeInRight(
                       duration: const Duration(milliseconds: 500),
                       child: Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.all(25),
+                        padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
-                          color: fillColor,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(
@@ -157,7 +163,7 @@ class ResultPage extends StatelessWidget {
                               HomeCubit.get(context).language2,
                               style: GoogleFonts.montserrat(
                                 color: primaryTextColor,
-                                fontSize: 24,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -189,10 +195,10 @@ class ResultPage extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          HomeCubit.get(context).translation,
+                                          HomeCubit.get(context).isAudioInput ? getFileName(HomeCubit.get(context).audioFilePath) : HomeCubit.get(context).translation,
                                           style: GoogleFonts.montserrat(
                                             color: secondaryTextColor,
-                                            fontSize: 18,
+                                            fontSize: 28,
                                             fontWeight: FontWeight.w600,
                                           ),
                                           softWrap: true, // Allows text to wrap
@@ -209,129 +215,47 @@ class ResultPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(height: 5.h),
-                    FadeInUp(
-                      duration: const Duration(milliseconds: 500),
-                      child: Text(
-                        "Cultural insights",
-                        style: GoogleFonts.montserrat(
-                          color: primaryColor,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 2.5.h),
-                    FadeInUp(
-                      duration: const Duration(milliseconds: 500),
-                      child: Container(
-                        padding: const EdgeInsets.all(25),
-                        decoration: BoxDecoration(
-                          color: fillColor,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(20),
+                    SizedBox(height: 10.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          child: GestureDetector(
+                            onTap: () {
+                              HomeCubit.get(context).reset();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeScreen(),
+                                ),
+                              );
+                            },
+                            child: IntrinsicWidth(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 30),
+                                height: 8.h,
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.add, color: Colors.white, size: 25),
+                                    SizedBox(width: 3.w),
+                                    Text(
+                                      "New translation",
+                                      style: GoogleFonts.montserrat(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            Text(
-                              "Another sentence that can be used for greating someone",
-                              style: GoogleFonts.montserrat(
-                                color: secondaryTextColor,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            SizedBox(height: 2.h),
-                            Row(
-                              children: [
-                                IconButton(
-                                    onPressed: () {
-                                      HomeCubit.get(context).togglePlaying(isSource: false);
-                                    },
-                                    icon: Icon(
-                                    Icons.volume_up,
-                                      color: primaryColor,
-                                      size: 30,
-                                    )),
-                                Expanded(
-                                  child: Text(
-                                    "عامل ايه ؟ (? meaning : how are you)",
-                                    style: GoogleFonts.montserrat(
-                                      color: secondaryTextColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.volume_up,
-                                      color: primaryColor,
-                                      size: 30,
-                                    )),
-                                Expanded(
-                                  child: Text(
-                                    "عامل ايه ؟ (? meaning : how are you)",
-                                    style: GoogleFonts.montserrat(
-                                      color: secondaryTextColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 5.h),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "Note: ",
-                                    style: GoogleFonts.montserrat(
-                                      color: primaryColor,
-                                      // Change this to your desired color
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: "this phrase can’t be translated literally",
-                                    style: GoogleFonts.montserrat(
-                                      color: secondaryTextColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 2.h),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  "See more details",
-                                  style: GoogleFonts.montserrat(
-                                    color: primaryTextColor,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+                      ],
                     )
                   ],
                 ),
