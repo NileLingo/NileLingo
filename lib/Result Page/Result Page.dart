@@ -61,7 +61,9 @@ class ResultPage extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 15),
                 child: IconButton(
                   onPressed: () {
-                    HomeCubit.get(context).toggleFavourite();
+                    HomeCubit.get(context).toggleFavorite(
+                      userId,HomeCubit.get(context).translationId
+                    );
                   },
                   icon: FaIcon(
                     HomeCubit.get(context).isFavourite
@@ -195,7 +197,7 @@ class ResultPage extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          HomeCubit.get(context).isAudioInput ? getFileName(HomeCubit.get(context).audioFilePath) : HomeCubit.get(context).translation,
+                                          HomeCubit.get(context).translation,
                                           style: GoogleFonts.montserrat(
                                             color: secondaryTextColor,
                                             fontSize: 28,
@@ -219,38 +221,36 @@ class ResultPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Flexible(
-                          child: GestureDetector(
-                            onTap: () {
-                              HomeCubit.get(context).reset();
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HomeScreen(),
-                                ),
-                              );
-                            },
-                            child: IntrinsicWidth(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 30),
-                                height: 8.h,
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.add, color: Colors.white, size: 25),
-                                    SizedBox(width: 3.w),
-                                    Text(
-                                      "New translation",
-                                      style: GoogleFonts.montserrat(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                      ),
+                        GestureDetector(
+                          onTap: () {
+                            HomeCubit.get(context).reset();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ),
+                            );
+                          },
+                          child: IntrinsicWidth(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 30),
+                              height: 8.h,
+                              decoration: BoxDecoration(
+                                color: primaryColor,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.add, color: Colors.white, size: 25),
+                                  SizedBox(width: 3.w),
+                                  Text(
+                                    "New translation",
+                                    style: GoogleFonts.montserrat(
+                                      color: Colors.white,
+                                      fontSize: 15,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

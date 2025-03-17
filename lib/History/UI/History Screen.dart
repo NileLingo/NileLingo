@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../Constants/Constant.dart';
+import '../Cubit/History Cubit.dart';
+import '../Cubit/History States.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -13,111 +17,159 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  String language1 = "EGY";
-  String language2 = "ENG";
-
-  Map<String, List<String>> history = {
-    "Feb 7, 2025": ["Hello", "مرحبا", "Goodbye", "وداعا"],
-    "Feb 8, 2025": ["Goodbye", "وداعا"],
-    "Feb 9, 2025": ["Good Morning", "صباح الخير"],
-    "Feb 10, 2025": ["Good Night", "تصبح على خير"],
-    "Feb 11, 2025": ["Thank You", "شكرا لك"],
-    "Feb 12, 2025": ["I Love You", "أنا أحبك"],
-  };
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      HistoryCubit.get(context).fetchUserTranslations(userId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: primaryTextColor,
-        ),
-        backgroundColor: backgroundColor,
-        title: Text(
-          "History",
-          style: GoogleFonts.montserrat(
-            color: primaryTextColor,
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
+    return BlocConsumer<HistoryCubit, HistoryStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        final historyData = HistoryCubit.get(context).translations;
+
+        return Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            iconTheme: IconThemeData(color: primaryTextColor),
+            backgroundColor: backgroundColor,
+            title: Text(
+              "History",
+              style: GoogleFonts.montserrat(
+                color: primaryTextColor,
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
-        ),
+          body: state is HistoryLoadingState
+              ? Center(
+            child: SpinKitCircle(
+              color: primaryColor,
+              size: 70,
+            ),
+          )
+              : historyData.isEmpty
+              ? _buildNoTranslationsFound()
+              : _buildTranslationList(historyData),
+        );
+      },
+    );
+  }
+
+  Widget _buildNoTranslationsFound() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            FontAwesomeIcons.fileCircleXmark,
+            size: 60,
+            color: Colors.grey.shade500,
+          ),
+          SizedBox(height: 2.h),
+          Text(
+            "No translations found",
+            style: GoogleFonts.montserrat(
+              color: Colors.grey.shade600,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 22),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: history.entries.map((entry) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      entry.key, // Date
+    );
+  }
+
+  Widget _buildTranslationList(List<dynamic> historyData) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 22),
+      child: ListView.builder(
+        itemCount: historyData.length,
+        itemBuilder: (context, index) {
+          final translation = historyData[index];
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _formatDate(translation['date']),
+                style: GoogleFonts.montserrat(
+                  color: primaryTextColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 0.5.h),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+
+                  Expanded(
+                    child: Text(
+                      translation['src_text'],
                       style: GoogleFonts.montserrat(
                         color: primaryTextColor,
                         fontSize: 16,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                       ),
+                      textAlign: TextAlign.left,
                     ),
-                    SizedBox(height: 1.h),
-                    Column(
-                      children: [
-                        for (int i = 0; i < entry.value.length; i += 2)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        entry.value[i],
-                                        style: GoogleFonts.montserrat(
-                                          color: primaryTextColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      if (i + 1 < entry.value.length)
-                                        Container(
-                                          width: double.infinity,
-                                          child: Text(
-                                            entry.value[i + 1],
-                                            style: GoogleFonts.montserrat(
-                                              color: primaryTextColor,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                            textAlign: TextAlign.right,
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                                 SizedBox(width: 5.w),
-                                Icon(
-                                  FontAwesomeIcons.star,
-                                  color: primaryColor,
-                                  size: 20,
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
+                  ),
+                  SizedBox(width: 5.w),
+
+                  Expanded(
+                    child: Text(
+                      translation['tgt_text'],
+                      style: GoogleFonts.montserrat(
+                        color: primaryTextColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      textAlign: TextAlign.right,
                     ),
-                    SizedBox(height: 2.h),
-                  ],
-                );
-              }).toList(),
-            ),
-          ),
-        ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 0.5.h),
+
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Icon(
+                    translation['favorite'] == true
+                        ? FontAwesomeIcons.solidStar
+                        : FontAwesomeIcons.star,
+                    color:  primaryColor,
+                    size: 20,
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 2.h), // Space between entries
+            ],
+          );
+        },
       ),
     );
+  }
+  String _formatDate(String dateString) {
+    DateTime date = DateTime.parse(dateString);
+    return "${_monthName(date.month)} ${date.day}, ${date.year}";
+  }
+
+  String _monthName(int month) {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return months[month - 1];
   }
 }

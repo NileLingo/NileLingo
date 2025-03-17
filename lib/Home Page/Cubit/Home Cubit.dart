@@ -28,6 +28,7 @@ class HomeCubit extends Cubit<HomeStates> {
   String sourceText = "";
   String translation = "";
   AudioApi audioApi = AudioApi();
+  String translationId = "";
   final AudioRecorder audioRecorder = AudioRecorder();
   final AudioPlayer audioPlayer = AudioPlayer();
 
@@ -148,7 +149,9 @@ class HomeCubit extends Cubit<HomeStates> {
       emit(ErrorState("Please select an audio file."));
       return;
     }
+
     translation = "";
+    translationId = ""; // Reset translationId before processing
     emit(TranslationLoadingState());
 
     try {
@@ -156,20 +159,61 @@ class HomeCubit extends Cubit<HomeStates> {
       String srcLang = (language1 == "EGY") ? "ar" : "en";
       String tgtLang = (language2 == "ENG") ? "en" : "ar";
 
-      String? translatedAudioPath = await AudioApi.speechToSpeechTranslation(filePath, srcLang, tgtLang);
+      // Call the API and receive the translated text, audio file path, and translation ID
+      Map<String, String>? result =
+      await AudioApi.speechToSpeechTranslation(filePath, srcLang, tgtLang);
 
-      if (translatedAudioPath == null || translatedAudioPath.isEmpty) {
+      if (result == null || result["audioFilePath"] == null) {
         emit(ErrorState("Translation failed: No audio file returned."));
         return;
       }
 
-      audioFilePath = translatedAudioPath;
-      print("🎵 Translated speech audio saved at: $audioFilePath");
+      // Extract translation, audio file path, and translation ID
+      translation = result["translationText"] ?? "";
+      audioFilePath = result["audioFilePath"]!;
+      translationId = result["translationId"] ?? "";
 
-      emit(TranslationSuccessWithAudioState("", audioFilePath));
+      print("🎵 Translated speech audio saved at: $audioFilePath");
+      print("📜 Translated text: $translation");
+      print("🆔 Translation ID: $translationId");
+
+      emit(TranslationSuccessWithAudioState(translation, audioFilePath, translationId));
     } catch (e) {
       print("🚨 Exception: $e");
       emit(ErrorState("Audio processing failed: $e"));
+    }
+  }
+  Future<void> toggleFavorite(String userId, String translationId) async {
+    if (translationId.trim().isEmpty) {
+      emit(ErrorState("Invalid translation ID."));
+      return;
+    }
+
+    emit(FavoriteToggleLoadingState());
+
+    try {
+      // Toggle the local state first
+      toggleFavourite();
+
+      // Call the API to toggle favorite status
+      bool? newFavoriteStatus =
+      await AudioApi.toggleFavorite(userId, translationId);
+
+      if (newFavoriteStatus == null) {
+        // Revert the change if the API call fails
+        toggleFavourite();
+        emit(ErrorState("Failed to update favorite status."));
+        return;
+      }
+
+      print("⭐ Favorite status updated: $newFavoriteStatus");
+
+      emit(FavoriteToggleSuccessState(newFavoriteStatus));
+    } catch (e) {
+      // Revert the change if an exception occurs
+      toggleFavourite();
+      print("🚨 Exception: $e");
+      emit(ErrorState("Failed to toggle favorite: $e"));
     }
   }
 
@@ -181,6 +225,7 @@ class HomeCubit extends Cubit<HomeStates> {
 
     isAudioInput = false; // Set as text input
     sourceText = text.trim();
+    translationId = ""; // Reset translationId before processing
     emit(SourceTextChangedState(sourceText));
     emit(TranslationLoadingState());
 
@@ -188,27 +233,34 @@ class HomeCubit extends Cubit<HomeStates> {
       String srcLang = (language1 == "EGY") ? "ar" : "en";
       String tgtLang = (language2 == "ENG") ? "en" : "ar";
 
-      String? translationResult = await AudioApi.translateSpeech(sourceText, srcLang, tgtLang);
+      // Call translateAndSpeak to get the translation text, audio path, and translation ID
+      Map<String, String>? result =
+      await AudioApi.translateAndSpeak(sourceText, srcLang, tgtLang);
 
-      if (translationResult == null || translationResult.isEmpty) {
+      if (result == null) {
         emit(ErrorState("Translation failed: No response from API."));
         return;
       }
 
-      translation = translationResult;
-      print("✅ Translation success: $translation");
+      translation = result["translationText"] ?? "";
+      audioFilePath = result["audioFilePath"] ?? "";
+      translationId = result["translationId"] ?? "";
 
-      String? generatedAudioPath = await AudioApi.translateAndSpeak(sourceText, srcLang, tgtLang);
+      if (translation.isEmpty) {
+        emit(ErrorState("Translation failed: No text returned."));
+        return;
+      }
 
-      if (generatedAudioPath == null || generatedAudioPath.isEmpty) {
+      if (audioFilePath.isEmpty) {
         emit(ErrorState("Audio generation failed: No file path returned."));
         return;
       }
 
-      audioFilePath = generatedAudioPath;
+      print("✅ Translation success: $translation");
       print("🎵 Audio file generated at: $audioFilePath");
+      print("🆔 Translation ID: $translationId");
 
-      emit(TranslationSuccessWithAudioState(translation, audioFilePath));
+      emit(TranslationSuccessWithAudioState(translation, audioFilePath, translationId));
     } catch (e) {
       print("🚨 Exception: $e");
       emit(ErrorState("Translation and speech failed: $e"));

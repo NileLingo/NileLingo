@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nile_lingo/History/Cubit/History%20Cubit.dart';
 import 'package:sizer/sizer.dart';
 import 'Home Page/Cubit/Home Cubit.dart';
+import 'Login/Cubit/Login Cubit.dart';
 import 'Login/UI/Login Screen.dart';
+import 'Sign up/Cubit/Sign Up Cubit.dart';
 
 void main() {
   runApp( MyApp());
@@ -19,6 +22,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => HomeCubit(),
         ),
+        BlocProvider(create: (context) => LoginCubit()),
+        BlocProvider(create: (context) => SignUPCubit()),
+        BlocProvider(create: (context) => HistoryCubit()),
       ],
       child: Sizer(
         builder: (context, orientation, deviceType) => MaterialApp(

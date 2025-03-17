@@ -8,10 +8,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nile_lingo/Home%20Page/Cubit/Home%20Cubit.dart';
 import 'package:nile_lingo/Home%20Page/Cubit/Home%20States.dart';
+import 'package:nile_lingo/Login/Cubit/Login%20Cubit.dart';
 import 'package:nile_lingo/Result%20Page/Result%20Page.dart';
+import 'package:nile_lingo/Sign%20up/Cubit/Sign%20Up%20Cubit.dart';
 import 'package:record/record.dart';
 import 'package:sizer/sizer.dart';
 import '../../Constants/Constant.dart';
+import '../../History/Cubit/History Cubit.dart';
 import '../../History/UI/History Screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -67,11 +70,7 @@ class HomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: IconButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HistoryScreen()),
-                            );
+
                           },
                           icon: Icon(
                             Icons.account_circle_outlined,
@@ -126,21 +125,21 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    width: 120,
-                    height: 120,
-                    left: 34.w,
+                    width: 115,
+                    height: 115,
+                    left: 35.w,
                     bottom: 7.h,
                     child: GestureDetector(
                       onTap: () {
-                        HomeCubit.get(context).reset();
+                        HistoryCubit.get(context).fetchUserTranslations(userId);
                       },
                       child: Container(
+                        alignment: Alignment.center,
                         decoration: const BoxDecoration(
                           color: Color(0xff433061),
                           borderRadius: BorderRadius.all(Radius.circular(100)),
                         ),
-                        child: Image.asset("assets/Plus.png",
-                        ),
+                        child: FaIcon(FontAwesomeIcons.plus,size: 60,color: primaryColor,),
                       ),
                     ),
                   ),
@@ -150,7 +149,13 @@ class HomeScreen extends StatelessWidget {
                     right: 7.w,
                     bottom: 4.h,
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HistoryScreen()),
+                        );
+                      },
                       child: Container(
                         decoration: const BoxDecoration(
                           color: Color(0xff433061),
@@ -246,7 +251,6 @@ Widget RecordSection(context) {
                         ),
                       ),
                     ),
-                    SizedBox(height: 3.5.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [

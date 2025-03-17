@@ -6,3 +6,6 @@ Color fillColor = const Color(0xff1E1E1E);
 Color primaryTextColor = const Color(0xFFF5F5F5);
 Color secondaryTextColor = const Color(0xFFCCCCCC);
 Color errorColor = const Color(0xFFCF6679);
+
+String baseUrl = "https://83be-34-125-221-136.ngrok-free.app/";
+String userId = "";

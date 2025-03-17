@@ -53,6 +53,14 @@ class SourceTextChangedState extends HomeStates {
 class TranslationSuccessWithAudioState extends HomeStates {
   final String translation;
   final String audioFilePath;
+  final String translationId;
 
-  TranslationSuccessWithAudioState(this.translation, this.audioFilePath);
+  TranslationSuccessWithAudioState(this.translation, this.audioFilePath, this.translationId);
+}
+
+class FavoriteToggleLoadingState extends HomeStates {}
+
+class FavoriteToggleSuccessState extends HomeStates {
+  final bool isFavourite;
+  FavoriteToggleSuccessState(this.isFavourite);
 }
