@@ -100,13 +100,9 @@ lib/
 
 ## 📸 Screenshots
 
-> _Add actual screenshots of your app here (optional)_
-
-```
 ![Login Screen](![image](https://github.com/user-attachments/assets/d12fa56c-3f50-4b71-a198-5d6edb8344cc))
 ![Translation Screen](![image](https://github.com/user-attachments/assets/3a67a969-596e-4c40-a83f-58393f0ffe91))
 ![History Screen](![image](https://github.com/user-attachments/assets/763501ad-ee58-4ac9-89e3-54514415b016))
-```
 
 ---
 
