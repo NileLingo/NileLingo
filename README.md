@@ -100,9 +100,9 @@ lib/
 
 ## 📸 Screenshots
 
-![Login Screen](![image](https://github.com/user-attachments/assets/d12fa56c-3f50-4b71-a198-5d6edb8344cc))
-![Translation Screen](![image](https://github.com/user-attachments/assets/3a67a969-596e-4c40-a83f-58393f0ffe91))
-![History Screen](![image](https://github.com/user-attachments/assets/763501ad-ee58-4ac9-89e3-54514415b016))
+![image](https://github.com/user-attachments/assets/fff9286a-3c38-4f83-9fd2-34361a64d610)
+![Picture2](https://github.com/user-attachments/assets/12f0435f-573e-4d39-aec5-d2b0790a78f3)
+![Picture3](https://github.com/user-attachments/assets/43024bd9-936e-4407-86e1-4504a7bc4d56)
 
 ---
 
